@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@next/env": "^16.0.4",
+    "firebase": "^12.6.0",
+    "preline": "^3.2.3"
+  }
+}
