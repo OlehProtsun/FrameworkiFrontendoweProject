@@ -1,7 +1,6 @@
 import WordsearchGame from "@/app/components/WordsearchGame";
 
 export default function WordsearchPage() {
-  // тут встав свій ID документа z Firestore (z kolumny Document ID)
   const gameId = "OXFYNDT1kw31qtr1G0Xy";
 
   return (

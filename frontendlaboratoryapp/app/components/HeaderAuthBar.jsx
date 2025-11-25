@@ -8,7 +8,6 @@ export default function HeaderAuthBar() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  // Поки контекст вантажиться – можна показати легкий скелетон
   if (loading) {
     return (
       <div className="flex items-center gap-2">
@@ -18,7 +17,6 @@ export default function HeaderAuthBar() {
     );
   }
 
-  // ❌ Користувач НЕ залогінений → показуємо Register + Sign in
   if (!user) {
     return (
       <>
@@ -38,7 +36,6 @@ export default function HeaderAuthBar() {
     );
   }
 
-  // ✅ Користувач залогінений
   const initial =
     (user.displayName?.[0] || user.email?.[0] || "U").toUpperCase();
 

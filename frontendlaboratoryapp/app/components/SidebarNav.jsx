@@ -3,8 +3,6 @@
 import { useAuth } from "@/app/lib/AuthContext";
 import Link from "next/link";
 
-// Якщо в тебе вже є окремий NavItem – можеш імпортувати його.
-// Тут я роблю спрощену версію, дуже схожу на те, що ти вже маєш.
 function NavItem({ href, label, children }) {
   return (
     <Link

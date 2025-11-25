@@ -16,7 +16,6 @@ export default function RegisterPage() {
 
   const [registerError, setRegisterError] = useState("");
 
-  // Jeśli już zalogowany – nie pokazujemy formularza
   if (user) {
     return null;
   }
@@ -30,7 +29,6 @@ export default function RegisterPage() {
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
 
-    // walidacja równości haseł
     if (password !== confirmPassword) {
       setRegisterError("Hasła nie są takie same.");
       return;
@@ -48,12 +46,10 @@ export default function RegisterPage() {
       await sendEmailVerification(auth.currentUser);
       console.log("Email verification sent!");
 
-      // przekierowanie do strony weryfikacji
       router.push("/user/verify");
     } catch (error) {
       console.dir(error);
 
-      // ładniejszy komunikat dla email already in use
       if (error.code === "auth/email-already-in-use") {
         setRegisterError(
           "Konto z tym adresem email już istnieje. Użyj innego adresu lub zaloguj się."

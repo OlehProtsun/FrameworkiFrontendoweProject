@@ -8,14 +8,12 @@ export default function VerifyEmailPage() {
   const { user } = useAuth();
   const [email, setEmail] = useState(user?.email || "");
 
-  // zapamiętujemy email, jeśli user się pojawi
   useEffect(() => {
     if (user?.email && !email) {
       setEmail(user.email);
     }
   }, [user, email]);
 
-  // automatyczne wylogowanie po wejściu na stronę
   useEffect(() => {
     const auth = getAuth();
     signOut(auth).catch((err) => console.error(err));

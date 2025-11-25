@@ -22,7 +22,6 @@ export default function ChangePasswordPage() {
   const [loading, setLoading] = useState(false);
 
   if (!user) {
-    // у нас і так є Protected layout, але на всякий випадок
     return null;
   }
 
@@ -55,7 +54,6 @@ export default function ChangePasswordPage() {
     setLoading(true);
 
     try {
-      // 1. re-authenticate з поточним паролем
       const credential = EmailAuthProvider.credential(
         currentUser.email,
         currentPassword
@@ -63,7 +61,6 @@ export default function ChangePasswordPage() {
 
       await reauthenticateWithCredential(currentUser, credential);
 
-      // 2. оновлюємо пароль
       await updatePassword(currentUser, newPassword);
 
       setSuccess("Your password has been updated successfully.");

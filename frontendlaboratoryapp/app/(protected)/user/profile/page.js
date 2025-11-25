@@ -11,7 +11,6 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // address state
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [zipCode, setZipCode] = useState("");
@@ -24,7 +23,6 @@ export default function ProfilePage() {
   const initialDisplayName = user.displayName || "";
   const initialPhotoURL = user.photoURL || "";
 
-  // 🔹 Zadanie 4 – odczyt adresu z Firestore
   useEffect(() => {
     const loadAddress = async () => {
       try {
@@ -36,7 +34,6 @@ export default function ProfilePage() {
           setStreet(address.street || "");
           setZipCode(address.zipCode || "");
         } else {
-          // brak dokumentu – zostaw puste pola
           setCity("");
           setStreet("");
           setZipCode("");
@@ -62,10 +59,8 @@ export default function ProfilePage() {
     const photoURL = form.photoURL.value;
 
     try {
-      // 🔹 Aktualizacja profilu auth
       await updateProfile(user, { displayName, photoURL });
 
-      // 🔹 Zadanie 1 – zapis/aktualizacja adresu w kolekcji users
       await setDoc(
         doc(db, "users", user.uid),
         {
@@ -75,7 +70,7 @@ export default function ProfilePage() {
             zipCode,
           },
         },
-        { merge: true } // nie nadpisuje całego dokumentu, tylko łączy
+        { merge: true }
       );
 
       setSuccess("Profile updated successfully.");

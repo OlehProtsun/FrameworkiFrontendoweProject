@@ -1,4 +1,3 @@
-// app/(protected)/layout.jsx
 "use client";
 
 import { useAuth } from "../lib/AuthContext";
