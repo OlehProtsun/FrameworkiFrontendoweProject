@@ -24,27 +24,41 @@ export default function SignInPage() {
 
     try {
       await setPersistence(auth, browserSessionPersistence);
-      await signInWithEmailAndPassword(auth, email, password);
+      const credentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
+      const loggedUser = credentials.user;
+
+      // jeśli email nie jest zweryfikowany → przekierowanie na /user/verify
+      if (!loggedUser.emailVerified) {
+        router.push("/user/verify");
+        return;
+      }
+
+      // klasyczne zachowanie: returnUrl -> albo /
       if (returnUrl) {
         router.push(returnUrl);
       } else {
         router.push("/");
       }
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError("Nieprawidłowy email lub hasło.");
     }
   };
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="w-full max-w-md">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 shadow-[0_22px_70px_rgba(15,23,42,0.95)] backdrop-blur-2xl">
-          <div className="pointer-events-none absolute inset-x-12 -top-32 h-40 rounded-full bg-gradient-to-b from-sky-500/40 via-indigo-500/20 to-transparent blur-3xl" />
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 shadow-[0_18px_55px_rgba(15,23,42,0.9)] backdrop-blur-2xl">
+          <div className="pointer-events-none absolute inset-x-12 -top-32 h-40 rounded-full bg-gradient-to-b from-sky-500/40 via-indigo-500/25 to-transparent blur-3xl" />
 
           <div className="relative p-6 sm:p-7">
             <div className="mb-6 text-center">
-              <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-violet-500 shadow-[0_16px_40px_rgba(56,189,248,0.75)]">
+              <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-violet-500 shadow-[0_12px_32px_rgba(56,189,248,0.7)]">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"

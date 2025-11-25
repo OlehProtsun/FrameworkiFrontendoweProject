@@ -2,6 +2,8 @@ import "./globals.css";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "./lib/AuthContext";
+import HeaderAuthBar from "./components/HeaderAuthBar";
+
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -196,18 +198,7 @@ export default function RootLayout({ children }) {
                       </div>
 
                       <div className="ml-auto flex items-center gap-2">
-                        <Link
-                          href="/user/register"
-                          className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/[0.02] px-3 py-1.5 text-xs font-medium text-slate-100 shadow-sm hover:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-sky-500/60 focus:ring-offset-1 focus:ring-offset-slate-950"
-                        >
-                          Register
-                        </Link>
-                        <Link
-                          href="/user/signin"
-                          className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 via-indigo-500 to-violet-500 px-3 py-1.5 text-xs font-medium text-white shadow-[0_14px_40px_rgba(56,189,248,0.7)] hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:ring-offset-1 focus:ring-offset-slate-950"
-                        >
-                          Sign in
-                        </Link>
+                         <HeaderAuthBar />
                       </div>
                     </div>
                   </header>

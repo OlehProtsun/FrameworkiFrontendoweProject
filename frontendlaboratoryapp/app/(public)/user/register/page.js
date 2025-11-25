@@ -1,37 +1,78 @@
 "use client";
 
 import { useState } from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { useAuth } from "@/app/lib/AuthContext";
 
 export default function RegisterPage() {
+  const { user } = useAuth();
   const auth = getAuth();
   const router = useRouter();
-  const [error, setError] = useState("");
+
+  const [registerError, setRegisterError] = useState("");
+
+  // Jeśli już zalogowany – nie pokazujemy formularza
+  if (user) {
+    return null;
+  }
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const email = e.target["email"].value;
-    const password = e.target["password"].value;
-    setError("");
+    setRegisterError("");
+
+    const form = e.currentTarget;
+    const email = form.email.value;
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    // walidacja równości haseł
+    if (password !== confirmPassword) {
+      setRegisterError("Hasła nie są takie same.");
+      return;
+    }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/user/signin");
-    } catch (err) {
-      setError(err.message);
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      console.log("User registered!", result.user);
+
+      await sendEmailVerification(auth.currentUser);
+      console.log("Email verification sent!");
+
+      // przekierowanie do strony weryfikacji
+      router.push("/user/verify");
+    } catch (error) {
+      console.dir(error);
+
+      // ładniejszy komunikat dla email already in use
+      if (error.code === "auth/email-already-in-use") {
+        setRegisterError(
+          "Konto z tym adresem email już istnieje. Użyj innego adresu lub zaloguj się."
+        );
+      } else {
+        setRegisterError(error.message);
+      }
     }
   };
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
       <div className="w-full max-w-md">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 shadow-[0_22px_70px_rgba(15,23,42,0.95)] backdrop-blur-2xl">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 shadow-[0_18px_55px_rgba(15,23,42,0.9)] backdrop-blur-2xl">
           <div className="pointer-events-none absolute inset-x-12 -top-32 h-40 rounded-full bg-gradient-to-b from-emerald-400/40 via-sky-500/25 to-transparent blur-3xl" />
 
           <div className="relative p-6 sm:p-7">
             <div className="mb-6 text-center">
-              <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-400 via-sky-500 to-indigo-500 shadow-[0_16px_40px_rgba(45,212,191,0.75)]">
+              <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-emerald-400 via-sky-500 to-indigo-500 shadow-[0_12px_32px_rgba(45,212,191,0.7)]">
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -55,9 +96,10 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {error && (
+            {/* Alert błędu rejestracji */}
+            {registerError && (
               <div className="mb-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
-                {error}
+                {registerError}
               </div>
             )}
 
@@ -89,6 +131,23 @@ export default function RegisterPage() {
                 <input
                   id="password"
                   name="password"
+                  type="password"
+                  required
+                  className="block w-full rounded-2xl border border-slate-700 bg-slate-900/70 px-3.5 py-2.5 text-sm text-slate-50 placeholder-slate-500 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-xs font-medium uppercase tracking-wide text-slate-400"
+                >
+                  Repeat password
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
                   required
                   className="block w-full rounded-2xl border border-slate-700 bg-slate-900/70 px-3.5 py-2.5 text-sm text-slate-50 placeholder-slate-500 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
